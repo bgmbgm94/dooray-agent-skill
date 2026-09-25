@@ -1,9 +1,9 @@
-# Dooray standard-user API references
+# 일반 사용자용 Dooray API 참고 자료
 
-These pages describe *publicly evidenced* endpoints and local helper usage. They are not an API token, private API manual, organization configuration, or live success claim.
+이 문서는 공개 자료에서 확인한 엔드포인트와 로컬 도우미의 사용 범위를 설명합니다. 실제 토큰 권한이나 모든 API의 라이브 성공을 보증하지 않습니다.
 
-- [Account and projects](account-project.md)
-- [Calendar and messenger](calendar-messenger.md)
-- [Wiki and drive](wiki-drive.md)
+- [계정·프로젝트·업무](account-project.md)
+- [캘린더·메신저](calendar-messenger.md)
+- [위키·Drive 제한](wiki-drive.md)
 
-Public implementation evidence: [dooray-go/dooray-sdk](https://github.com/dooray-go/dooray-sdk/tree/develop/openapi) (BSD-3-Clause). The source is used as an API reference; this repository's Python implementation is newly written. API access depends on the token and organization permissions.
+공개 구현 근거: [dooray-go/dooray-sdk](https://github.com/dooray-go/dooray-sdk/tree/develop/openapi) (BSD-3-Clause). API 계약을 참고했으며 Python 코드는 새로 작성했습니다. 접근 가능한 리소스는 토큰과 Dooray 권한에 따라 달라집니다.
