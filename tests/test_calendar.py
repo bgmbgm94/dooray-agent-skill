@@ -70,6 +70,30 @@ class CalendarTests(unittest.TestCase):
                                                 "timeMax": "2026-09-22T00:00:00+09:00",
                                                 "calendars": "calendar-1,calendar-2"}))
 
+    def test_update_whole_day_event_explicitly_preserves_flag(self):
+        client = RecordingClient()
+        calendar.update_event("calendar-1", "event-1", subject="Holiday updated",
+                              body_markdown="Agenda", started_at="2026-09-21",
+                              ended_at="2026-09-21", whole_day=True,
+                              who_organization_member_ids=["member-1"],
+                              apply=True, client=client)
+        method, path, params, body, apply, resource_id = client.calls[0]
+        self.assertEqual((method, path, apply, resource_id),
+                         ("PUT", "/calendar/v1/calendars/calendar-1/events/event-1", True, "calendar-1"))
+        self.assertTrue(body["wholeDayFlag"])
+        self.assertEqual(body["endedAt"], "2026-09-22+09:00")
+
+    def test_update_event_without_apply_never_sends(self):
+        from client import DoorayClient, DoorayError
+        from unittest import mock
+        client = DoorayClient("dummy", write_policy="allow")
+        with mock.patch.object(client._opener, "open") as network:
+            with self.assertRaisesRegex(DoorayError, "apply"):
+                calendar.update_event("calendar-1", "event-1", subject="Holiday",
+                                      body_markdown="", started_at="2026-09-21",
+                                      ended_at="2026-09-21", whole_day=True, client=client)
+            network.assert_not_called()
+
     def test_rejects_unsafe_path_id(self):
         with self.assertRaises(ValueError):
             calendar.create_event("a/b", subject="Meeting", body_markdown="x", started_at="2026-09-21",

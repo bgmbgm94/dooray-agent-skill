@@ -139,3 +139,21 @@ def create_event(calendar_id: str, *, subject: str, body_markdown: str, started_
                          who_organization_member_ids=who_organization_member_ids)
     return _client(client).request("POST", f"/calendar/v1/calendars/{calendar_id}/events",
                                    json_body=payload, apply=apply, resource_id=calendar_id)
+
+
+def update_event(calendar_id: str, event_id: str, *, subject: str, body_markdown: str,
+                 started_at: str, ended_at: str, whole_day: bool = False,
+                 timezone: str = "+09:00", location: str = "",
+                 who_organization_member_ids=None, apply: bool = False, client=None):
+    """Update an event with an explicit wholeDayFlag and complete event fields.
+
+    Caller must supply the desired full event state rather than assuming omitted
+    PUT fields are safe. See the public SDK's UpdateEventRequest model.
+    """
+    calendar_id = _id(calendar_id, "calendar ID")
+    event_id = _id(event_id, "event ID")
+    payload = event_body(subject, body_markdown, started_at, ended_at,
+                         whole_day=whole_day, timezone=timezone, location=location,
+                         who_organization_member_ids=who_organization_member_ids)
+    return _client(client).request("PUT", f"/calendar/v1/calendars/{calendar_id}/events/{event_id}",
+                                   json_body=payload, apply=apply, resource_id=calendar_id)

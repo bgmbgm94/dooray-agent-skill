@@ -39,6 +39,19 @@ class CliTests(unittest.TestCase):
                 run(args, client)
             network.assert_not_called()
 
+    def test_calendar_update_requires_flag_and_explicit_apply(self):
+        from client import DoorayClient, DoorayError
+        args = build_parser().parse_args([
+            "calendar", "event-update", "calendar-1", "event-1", "--subject", "Holiday",
+            "--started-at", "2026-09-21", "--ended-at", "2026-09-21", "--whole-day",
+            "--to", "member-1",
+        ])
+        client = DoorayClient("dummy", write_policy="allow")
+        with mock.patch.object(client._opener, "open") as network:
+            with self.assertRaisesRegex(DoorayError, "apply"):
+                run(args, client)
+            network.assert_not_called()
+
     def test_messenger_send_is_not_sent_without_apply(self):
         from client import DoorayClient, DoorayError
         args = build_parser().parse_args(["messenger", "direct-send", "--to", "member-1", "--text", "Hello"])
