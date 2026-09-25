@@ -1,0 +1,16 @@
+# Local credentials
+.env
+.env.*
+!.env.example
+*.token
+*.key
+config.local.json
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+# Developer files
+.DS_Store
+.idea/
+.vscode/
