@@ -17,7 +17,7 @@ Claude Code 안에서 다음 명령을 실행합니다. **이 공개 저장소 �
 /plugin install dooray@dooray-agent-skill
 ```
 
-저장소의 `.claude-plugin/marketplace.json`과 플러그인 정의는 `claude plugin validate . --strict`로 검증했으며, 별도 임시 Claude 설정에서 **로컬 경로로 마켓플레이스 추가 → `dooray@dooray-agent-skill` 설치·활성화**까지 확인했습니다. 공개 GitHub 주소를 통한 설치·자연어 자동 발동은 아직 라이브 확인하지 않았습니다. 설치 시 스킬은 플러그인 캐시에 복사될 수 있어 경로가 **고정되지 않습니다**. `scripts/setup.sh`를 실행하려면 설치된 `skills/dooray` 디렉터리를 찾아 그 안에서 실행하세요. 관리자/엔터프라이즈 정책이 개인 마켓플레이스를 제한하면 설치가 거절될 수 있습니다.
+저장소의 `.claude-plugin/marketplace.json`과 플러그인 정의는 `claude plugin validate . --strict`로 검증했습니다. 별도 임시 Claude 설정에서 **공개 GitHub 주소로 마켓플레이스 추가 → `dooray@dooray-agent-skill` 설치·활성화 → 스킬·설정 문서 포함**까지 확인했습니다. 자연어 요청에서의 자동 선택과 실제 Dooray API 호출은 별도로 검증하지 않았습니다. 설치 시 스킬은 플러그인 캐시에 복사될 수 있어 경로가 **고정되지 않습니다**. `scripts/setup.sh`를 실행하려면 설치된 `skills/dooray` 디렉터리를 찾아 그 안에서 실행하세요. 관리자/엔터프라이즈 정책이 개인 마켓플레이스를 제한하면 설치가 거절될 수 있습니다.
 
 ### Codex·기타 Agent Skills 도구
 
