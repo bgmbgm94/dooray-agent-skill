@@ -53,8 +53,16 @@ class DoorayClient:
         self.write_policy = (write_policy or os.environ.get("DOORAY_WRITE_POLICY", "deny")).lower()
         if self.write_policy not in {"deny", "allow", "allowlist"}:
             raise DoorayError("Invalid write policy")
-        raw = os.environ.get("DOORAY_WRITE_ALLOWLIST", "")
-        self.allowlist = allowlist if allowlist is not None else {x.strip() for x in raw.split(",") if x.strip()}
+        raw = os.environ.get("DOORAY_WRITE_ALLOWLIST")
+        if allowlist is not None:
+            self.allowlist = allowlist
+        elif raw is not None:
+            # Explicitly empty overrides the saved list; never re-enable stale IDs.
+            self.allowlist = {x.strip() for x in raw.split(",") if x.strip()}
+        else:
+            allowlist_file = Path.home() / ".dooray-whitelist"
+            self.allowlist = ({line.strip() for line in allowlist_file.read_text(encoding="utf-8").splitlines()
+                               if line.strip()} if allowlist_file.exists() else set())
         self.timeout = timeout
         self._opener = urllib.request.build_opener(_NoRedirect())
 

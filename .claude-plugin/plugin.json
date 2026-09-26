@@ -1,5 +1,6 @@
 {
   "name": "dooray",
-  "description": "Dooray standard-user Agent Skill",
-  "version": "0.1.0"
+  "description": "Dooray 개인 API Agent Skill — 기본 읽기 전용, 승인된 쓰기만 허용",
+  "version": "0.2.0",
+  "author": {"name": "bgmbgm94"}
 }

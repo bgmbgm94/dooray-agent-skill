@@ -8,7 +8,7 @@ import sys
 
 from client import DoorayClient, DoorayError, path_id
 
-DOMAINS = ("me", "project", "post", "wiki", "calendar", "messenger")
+DOMAINS = ("me", "project", "post", "wiki", "calendar", "messenger", "drive")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -69,6 +69,45 @@ def build_parser() -> argparse.ArgumentParser:
     m.add_argument("channel_id")
     m.add_argument("--text", required=True)
     m.add_argument("--apply", action="store_true")
+    drive = sub.add_parser("drive", help="Drive queries and approved writes")
+    d_sub = drive.add_subparsers(dest="action", required=True)
+    d_sub.add_parser("list")
+    d = d_sub.add_parser("get")
+    d.add_argument("drive_id")
+    d = d_sub.add_parser("changes")
+    d.add_argument("drive_id")
+    d = d_sub.add_parser("files")
+    d.add_argument("drive_id")
+    d.add_argument("--parent-id")
+    d.add_argument("--size", type=int, default=100)
+    d.add_argument("--page", type=int, default=0)
+    d = d_sub.add_parser("meta")
+    d.add_argument("drive_id")
+    d.add_argument("file_id")
+    d = d_sub.add_parser("meta-global")
+    d.add_argument("file_id")
+    d = d_sub.add_parser("download")
+    d.add_argument("drive_id")
+    d.add_argument("file_id")
+    d.add_argument("--out", required=True, help="destination directory; existing file will not be replaced")
+    d = d_sub.add_parser("upload")
+    d.add_argument("drive_id")
+    d.add_argument("file_path")
+    d.add_argument("--parent-id")
+    d.add_argument("--apply", action="store_true")
+    d = d_sub.add_parser("create-folder")
+    d.add_argument("drive_id")
+    d.add_argument("folder_id")
+    d.add_argument("--name", required=True)
+    d.add_argument("--apply", action="store_true")
+    d = d_sub.add_parser("shared-links")
+    d.add_argument("drive_id")
+    d.add_argument("file_id")
+    d = d_sub.add_parser("share-create")
+    d.add_argument("drive_id")
+    d.add_argument("file_id")
+    d.add_argument("--expired-at", required=True, help="timezone-aware ISO 8601 date-time")
+    d.add_argument("--apply", action="store_true")
     return parser
 
 
@@ -114,6 +153,36 @@ def run(args: argparse.Namespace, client: DoorayClient) -> object:
             from messenger import send_channel_message
             return send_channel_message(args.channel_id, args.text, apply=args.apply, client=client)
         return client.request("GET", "/messenger/v1/channels")
+    if args.domain == "drive":
+        from drive_api import (create_folder, create_shared_link, download_file, get_changes,
+                               get_drive, get_file_meta, get_file_meta_global, list_drives,
+                               list_files, list_shared_links, upload_file)
+        if args.action == "list":
+            return list_drives(client)
+        if args.action == "get":
+            return get_drive(client, args.drive_id)
+        if args.action == "changes":
+            return get_changes(client, args.drive_id)
+        if args.action == "files":
+            return list_files(client, args.drive_id, parent_id=args.parent_id,
+                              size=args.size, page=args.page)
+        if args.action == "meta":
+            return get_file_meta(client, args.drive_id, args.file_id)
+        if args.action == "meta-global":
+            return get_file_meta_global(client, args.file_id)
+        if args.action == "download":
+            return {"saved_to": str(download_file(client, args.drive_id, args.file_id, args.out))}
+        if args.action == "upload":
+            return upload_file(client, args.drive_id, args.file_path,
+                               parent_id=args.parent_id, apply=args.apply)
+        if args.action == "create-folder":
+            return create_folder(client, args.drive_id, args.folder_id,
+                                 name=args.name, apply=args.apply)
+        if args.action == "shared-links":
+            return list_shared_links(client, args.drive_id, args.file_id)
+        if args.action == "share-create":
+            return create_shared_link(client, args.drive_id, args.file_id,
+                                      expired_at=args.expired_at, apply=args.apply)
     raise DoorayError("Unsupported command")
 
 

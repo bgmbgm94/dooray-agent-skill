@@ -1,27 +1,33 @@
 ---
 name: dooray
-description: Dooray 개인 API 토큰으로 프로젝트 업무·위키·캘린더·메신저를 조회하거나 사용자 승인 후 변경할 때 사용합니다. 기본 읽기 전용이며 쓰기에는 별도 정책과 적용 옵션이 필요합니다.
+description: 사용자가 "두레이", "Dooray", "dooray api", "두레이 업무/위키/캘린더/메신저/드라이브", "dooray drive"라고 말하거나 Dooray 개인 API로 업무·파일·일정 조회/수정을 요청할 때 사용합니다. 개인 토큰을 쓰며 변경 작업은 사용자 승인·쓰기 정책·--apply가 모두 필요합니다.
 ---
 # Dooray Agent Skill
 
-이 스킬 디렉터리에서 `python scripts/dooray.py --help`로 지원 명령을 확인하세요. Python 3.10+와 개인 API 토큰(`DOORAY_TOKEN` 또는 홈 디렉터리의 `~/.dooray-token`)이 필요합니다. 토큰을 채팅·로그·저장소에 노출하지 마세요. 기본 API 주소는 `https://api.dooray.com`입니다.
+Dooray 개인 토큰으로 업무·위키·캘린더·메신저·Drive를 다룹니다. **키워드는 에이전트의 자연어 스킬 발견을 돕는 힌트이지, 완전 일치 명령어가 아닙니다.** 설치와 활성화 여부를 먼저 확인하세요. 연락처·관리자 기능은 이 공개본에 없습니다.
 
-계정·업무·위키·캘린더·메신저 중 필요한 항목의 `references/*.md`만 읽으세요. **Drive·연락처·관리자 API는 구현하지 않았습니다.** 토큰에 따른 실제 접근 권한과 이 저장소의 구현 범위는 다릅니다.
+## 시작
+
+1. `python scripts/dooray.py --help`로 실제 CLI 지원 범위를 확인합니다. Python 3.10+ 표준 라이브러리만 필요합니다.
+2. 토큰이 없으면 채팅으로 값을 요구하지 말고, **실제로 설치된 스킬 디렉터리**에서 `bash scripts/setup.sh`를 실행하도록 안내합니다. 플러그인 캐시의 경로는 고정값으로 추측하지 마세요. 수동 방법은 번들에 포함된 [`references/setup.md`](references/setup.md)를 참조하세요.
+3. 대상 분야의 참조 문서만 읽습니다: [`references/README.md`](references/README.md), [`verification.md`](references/verification.md). 과거 원본의 라이브 검증과 현재 공개본의 오프라인 테스트를 혼동하지 않습니다.
 
 ## 안전한 작업 순서
 
-1. 조회 명령으로 대상과 ID를 확인합니다. 예시 ID를 실제 대상으로 간주하지 않습니다.
-2. 쓰기 전에 대상·전송 본문·예상 영향을 사용자에게 보여 주고 명시적으로 승인을 받습니다.
-3. 기본 쓰기 정책은 `deny`입니다. 승인된 쓰기만 `DOORAY_WRITE_POLICY=allow` 또는 `allowlist` + `DOORAY_WRITE_ALLOWLIST`를 설정하고 `--apply`를 전달합니다. 둘 중 하나라도 빠지면 쓰기 요청을 보내지 않습니다.
-4. 삭제·메시지 전송·일정 수정은 되돌릴 수 있다고 가정하지 않습니다. 수정할 일정은 최종 상태를 확인하고, `--whole-day` 또는 `--timed`를 명시합니다. 쓰기 후에는 다시 조회합니다.
-5. 검증 목적으로 실제 메시지를 보내거나 일정을 생성하지 않습니다. 단위 테스트는 네트워크를 모의 처리합니다.
+1. 먼저 읽기로 리소스 ID와 실제 접근 권한을 확인합니다. 입력 예시의 ID는 실제 대상이 아닙니다.
+2. 쓰기 전에 대상·내용·예상 영향을 사용자에게 보여 명시적으로 승인받습니다. **실서비스에 시험 메시지나 시험 파일을 만들지 않습니다.**
+3. 기본 정책 `deny`에서는 어떤 쓰기도 보내지 않습니다. 승인된 대상 ID만 `~/.dooray-whitelist`(프로젝트/Drive 등) 또는 `DOORAY_WRITE_ALLOWLIST`에 넣고, 필요한 세션에서만 `DOORAY_WRITE_POLICY=allowlist`를 사용합니다. 쓰기 명령의 `--apply`도 별도로 필요합니다. 파일만 등록해도 쓰기는 활성화되지 않습니다.
+4. Drive 업로드는 정확한 파일 전용 호스트로의 리디렉션만 허용합니다. 다운로드는 안전한 파일명·기존 파일 덮어쓰기 금지를 지킵니다. 파일 삭제·복사·이동은 현재 지원하지 않습니다. 공유 링크는 `member` 범위만 제공하며, 발급 전 대상과 만료 시각을 확인합니다.
+5. 일정 수정은 전체 최종 상태와 `--whole-day` 또는 `--timed`를 명시합니다. 전송·업로드·수정 후에는 다시 조회해 결과를 확인합니다.
 
-## 로컬 실행
+## 자주 쓰는 조회 예시 (스킬 디렉터리 기준)
 
 ```bash
 python scripts/dooray.py me
 python scripts/dooray.py project list
 python scripts/dooray.py calendar list
+python scripts/dooray.py drive list
+python scripts/dooray.py drive files '<drive-id>'
 ```
 
-Claude Code·Codex 설치 경로와 초기 토큰 설정은 저장소 루트 [`README.md`](../../README.md)를 참고하세요. 별도 Python 패키지 설치는 필요하지 않습니다.
+CLI에 없는 모듈 함수까지 자동 명령으로 제공한다고 가정하지 않습니다. 토큰은 `DOORAY_TOKEN` 환경변수 또는 사용자 홈의 `~/.dooray-token`에서 읽으며, 채팅·로그·저장소에 노출하지 않습니다.

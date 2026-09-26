@@ -1,0 +1,13 @@
+{
+  "name": "dooray-agent-skill",
+  "owner": {"name": "bgmbgm94"},
+  "description": "Dooray 개인 API 스킬 배포 카탈로그",
+  "plugins": [
+    {
+      "name": "dooray",
+      "source": "./",
+      "description": "Dooray 개인 API 스킬(업무·드라이브·위키·캘린더·메신저)",
+      "version": "0.2.0"
+    }
+  ]
+}

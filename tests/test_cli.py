@@ -11,8 +11,24 @@ from dooray import DOMAINS, build_parser, run
 
 class CliTests(unittest.TestCase):
     def test_command_surface_contains_no_administrative_domain(self):
-        self.assertEqual(set(DOMAINS), {"me", "project", "post", "wiki", "calendar", "messenger"})
+        self.assertEqual(set(DOMAINS), {"me", "project", "post", "wiki", "calendar", "messenger", "drive"})
         self.assertNotIn("admin", build_parser().format_help().lower())
+
+    def test_drive_list_dispatches_read(self):
+        args = build_parser().parse_args(["drive", "list"])
+        client = mock.Mock()
+        client.request.return_value = []
+        self.assertEqual(run(args, client), [])
+        client.request.assert_called_once_with("GET", "/drive/v1/drives")
+
+    def test_drive_upload_without_apply_does_not_send(self):
+        from client import DoorayClient, DoorayError
+        args = build_parser().parse_args(["drive", "upload", "drive1", "sample.txt"])
+        client = DoorayClient("dummy-token", write_policy="allow")
+        with mock.patch.object(client._opener, "open") as network:
+            with self.assertRaisesRegex(DoorayError, "apply"):
+                run(args, client)
+            network.assert_not_called()
 
     def test_project_query_does_not_write(self):
         args = build_parser().parse_args(["project", "list"])

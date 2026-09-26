@@ -92,11 +92,14 @@ class ResourceTests(unittest.TestCase):
         self.assertEqual(json.loads(self.requests[3].data)["parentPageId"], "root")
         self.assertEqual(json.loads(self.requests[4].data), {"subject": "S2", "body": {"mimeType": "text/x-markdown", "content": "C2"}})
 
-    def test_drive_fails_closed_without_documented_endpoint(self):
-        for action, args in ((drive.list_drives, ()), (drive.list_files, ("d",)), (drive.get_file, ("d", "f"))):
-            with self.assertRaises(drive.UnsupportedDriveAPI):
-                action(self.client, *args)
-        self.assertEqual(self.requests, [])
+    def test_drive_queries_use_personal_api(self):
+        drive.list_drives(self.client)
+        drive.list_files(self.client, "d")
+        drive.get_file(self.client, "d", "f")
+        self.assertEqual([r.get_method() for r in self.requests], ["GET", "GET", "GET"])
+        self.assertTrue(self.requests[0].full_url.endswith("/drive/v1/drives"))
+        self.assertTrue(self.requests[1].full_url.endswith("/drive/v1/drives/d/files?size=100&page=0"))
+        self.assertTrue(self.requests[2].full_url.endswith("/drive/v1/drives/d/files/f?media=meta"))
 
 
 if __name__ == "__main__":
