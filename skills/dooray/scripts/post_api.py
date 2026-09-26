@@ -1,12 +1,9 @@
-"""Project posts: documented standard-user list/detail/create endpoints.
-
-Evidence: https://github.com/dooray-go/dooray-sdk/tree/develop/openapi/project
-"""
+"""Project posts: standard-user list/detail/create operations."""
 from __future__ import annotations
 
 from client import path_id
 
-# Public SDK GetPostsOptions, limited to documented member-level filters.
+# Supported post-list filters for this adapter.
 _FILTERS = frozenset({
     "fromEmailAddress", "fromMemberIds", "toMemberIds", "toMemberSize",
     "ccMemberIds", "tagIds", "parentPostId", "postNumber",
@@ -17,7 +14,7 @@ _FILTERS = frozenset({
 
 def list_posts(client, project_id: str, *, page: int = 0, size: int = 20,
                **filters):
-    """List posts in a project using SDK-supported filters."""
+    """List posts in a project using supported filters."""
     if not isinstance(page, int) or isinstance(page, bool) or page < 0:
         raise ValueError("page must be a nonnegative integer")
     if not isinstance(size, int) or isinstance(size, bool) or not 1 <= size <= 100:

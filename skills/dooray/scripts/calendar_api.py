@@ -1,8 +1,4 @@
-"""Small Dooray calendar adapter. Endpoint and payload evidence:
-https://github.com/dooray-go/dooray-sdk/blob/v0.9.0/openapi/calendar/getevents.go
-https://github.com/dooray-go/dooray-sdk/blob/v0.9.0/openapi/calendar/postevents.go
-https://github.com/dooray-go/dooray-sdk/blob/v0.9.0/openapi/model/calendar/postevent_request.go
-https://github.com/dooray-go/dooray-sdk/blob/v0.9.0/utils/dateutils.go
+"""Small Dooray calendar adapter.
 
 Date-only input is a user-inclusive range; Dooray receives a next-day exclusive end.
 Writes are never sent directly: DoorayClient.request enforces apply/write policy.
@@ -58,7 +54,7 @@ def _zone(value):
 
 
 def whole_day_range(started_at: str, ended_at: str, *, timezone: str = "+09:00") -> tuple[str, str]:
-    """Convert user-inclusive dates into SDK date-only-with-offset boundaries."""
+    """Convert user-inclusive dates into date-only-with-offset boundaries."""
     start, end = _date(started_at), _date(ended_at)
     if end < start:
         raise ValueError("ended_at must not precede started_at")
@@ -91,7 +87,7 @@ def _aware_timestamp(value: str) -> datetime:
 def event_body(subject: str, body_markdown: str, started_at: str, ended_at: str,
                *, whole_day: bool = False, timezone: str = "+09:00", location: str = "",
                who_organization_member_ids=None) -> dict:
-    """Create a payload using public SDK EventRequest fields."""
+    """Create a calendar event payload."""
     if not isinstance(subject, str) or not subject.strip():
         raise ValueError("subject is required")
     if not isinstance(body_markdown, str) or not isinstance(location, str):
@@ -148,7 +144,7 @@ def update_event(calendar_id: str, event_id: str, *, subject: str, body_markdown
     """Update an event with an explicit wholeDayFlag and complete event fields.
 
     Caller must supply the desired full event state rather than assuming omitted
-    PUT fields are safe. See the public SDK's UpdateEventRequest model.
+    PUT fields are safe.
     """
     calendar_id = _id(calendar_id, "calendar ID")
     event_id = _id(event_id, "event ID")

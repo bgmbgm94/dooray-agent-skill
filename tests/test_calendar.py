@@ -1,4 +1,4 @@
-"""Offline contract tests derived from public dooray-sdk calendar endpoints and model."""
+"""Offline calendar request and payload tests."""
 import sys
 import unittest
 from pathlib import Path
@@ -32,7 +32,7 @@ class CalendarTests(unittest.TestCase):
         self.assertEqual(calendar.whole_day_range("2026-03-07", "2026-03-08", timezone="America/New_York"),
                          ("2026-03-07-05:00", "2026-03-09-04:00"))
 
-    def test_event_body_matches_public_sdk_model(self):
+    def test_event_body_fields(self):
         body = calendar.event_body(subject="Holiday", body_markdown="Day off", started_at="2026-09-21",
                                    ended_at="2026-09-21", whole_day=True, location="Office",
                                    who_organization_member_ids=["member-1"])

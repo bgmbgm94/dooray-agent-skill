@@ -1,8 +1,4 @@
-"""Small, dependency-free Dooray standard-user HTTP client.
-
-The public dooray-go/dooray-sdk implementation confirms the base URL,
-Authorization scheme and the `header.isSuccessful` response envelope.
-"""
+"""Small, dependency-free Dooray standard-user HTTP client."""
 from __future__ import annotations
 
 import json

@@ -9,8 +9,21 @@ Dooray 개인 토큰으로 업무·위키·캘린더·메신저·Drive를 다룹
 ## 시작
 
 1. `python scripts/dooray.py --help`로 실제 CLI 지원 범위를 확인합니다. Python 3.10+ 표준 라이브러리만 필요합니다.
-2. 토큰이 없으면 채팅으로 값을 요구하지 말고, **실제로 설치된 스킬 디렉터리**에서 `bash scripts/setup.sh`를 실행하도록 안내합니다. 플러그인 캐시의 경로는 고정값으로 추측하지 마세요. 수동 방법은 번들에 포함된 [`references/setup.md`](references/setup.md)를 참조하세요.
-3. 대상 분야의 참조 문서만 읽습니다: [`references/README.md`](references/README.md), [`verification.md`](references/verification.md). 과거 원본의 라이브 검증과 현재 공개본의 오프라인 테스트를 혼동하지 않습니다.
+2. 토큰이 없으면 채팅으로 값을 요구하지 말고, **실제로 설치된 스킬 디렉터리**에서 `bash scripts/setup.sh`를 실행하도록 안내합니다. 플러그인 캐시의 경로는 고정값으로 추측하지 마세요. 스크립트 없이 설정할 때는 아래의 숨김 입력 방법을 안내합니다.
+3. API별 과거 기록과 현재 구현을 비교해야 할 때만 [`references/verification.md`](references/verification.md)를 읽습니다. 원본의 라이브 검증과 공개본의 오프라인 테스트를 혼동하지 않습니다.
+
+### 스크립트 없이 수동 설정 (Bash)
+
+```bash
+umask 077
+read -rs -p 'Dooray token: ' token; printf '\n'
+printf '%s\n' "$token" > "$HOME/.dooray-token"
+unset token
+printf '%s\n' '<project-id>' '<drive-id>' > "$HOME/.dooray-whitelist"
+chmod 600 "$HOME/.dooray-token" "$HOME/.dooray-whitelist"
+```
+
+예시 ID는 승인된 실제 대상 ID로 바꿉니다. 쓰지 않는다면 허용 목록은 비워 두거나 생략합니다. Windows Git Bash에서는 `$HOME`과 Python의 사용자 홈 `%USERPROFILE%`이 다를 수 있으므로 `bash scripts/setup.sh`를 권장합니다. 파일만 만들어도 쓰기는 켜지지 않으며 아래 승인·정책·`--apply`가 필요합니다.
 
 ## 안전한 작업 순서
 

@@ -1,10 +1,5 @@
 """Dooray messenger read and explicit-write operations.
 
-Public SDK endpoint evidence:
-https://github.com/dooray-go/dooray-sdk/blob/v0.9.0/openapi/messenger/channels.go
-https://github.com/dooray-go/dooray-sdk/blob/v0.9.0/openapi/messenger/directsend.go
-https://github.com/dooray-go/dooray-sdk/blob/v0.9.0/openapi/messenger/sendmessage.go
-
 The injected/default DoorayClient owns all transport and write-policy enforcement.
 """
 from __future__ import annotations

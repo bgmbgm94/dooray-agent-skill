@@ -1,4 +1,4 @@
-"""Offline public dooray-sdk Messenger endpoint contract tests."""
+"""Offline Messenger request tests."""
 import sys
 import unittest
 from pathlib import Path

@@ -17,7 +17,7 @@ Claude Code 안에서 다음 명령을 실행합니다. **이 공개 저장소 �
 /plugin install dooray@dooray-agent-skill
 ```
 
-저장소의 `.claude-plugin/marketplace.json`과 플러그인 정의는 `claude plugin validate . --strict`로 검증했습니다. 별도 임시 Claude 설정에서 **공개 GitHub 주소로 마켓플레이스 추가 → `dooray@dooray-agent-skill` 설치·활성화 → 스킬·설정 문서 포함**까지 확인했습니다. 자연어 요청에서의 자동 선택과 실제 Dooray API 호출은 별도로 검증하지 않았습니다. 설치 시 스킬은 플러그인 캐시에 복사될 수 있어 경로가 **고정되지 않습니다**. `scripts/setup.sh`를 실행하려면 설치된 `skills/dooray` 디렉터리를 찾아 그 안에서 실행하세요. 관리자/엔터프라이즈 정책이 개인 마켓플레이스를 제한하면 설치가 거절될 수 있습니다.
+저장소의 `.claude-plugin/marketplace.json`과 플러그인 정의는 `claude plugin validate . --strict`로 검증했습니다. 별도 임시 Claude 설정에서 **공개 GitHub 주소로 마켓플레이스 추가 → `dooray@dooray-agent-skill` 설치·활성화**까지 확인했습니다. 자연어 요청에서의 자동 선택과 실제 Dooray API 호출은 별도로 검증하지 않았습니다. 설치 시 스킬은 플러그인 캐시에 복사될 수 있어 경로가 **고정되지 않습니다**. `scripts/setup.sh`를 실행하려면 설치된 `skills/dooray` 디렉터리를 찾아 그 안에서 실행하세요. 관리자/엔터프라이즈 정책이 개인 마켓플레이스를 제한하면 설치가 거절될 수 있습니다.
 
 ### Codex·기타 Agent Skills 도구
 
@@ -81,7 +81,7 @@ python scripts/dooray.py drive files '<drive-id>' --parent-id '<folder-id>'
 python scripts/dooray.py drive download '<drive-id>' '<file-id>' --out ./downloads
 ```
 
-Drive는 목록·메타·변경내역·다운로드, 승인된 파일 업로드·폴더 생성·**멤버 범위** 공유 링크 발급/조회를 지원합니다. 다운로드 시 서버 제공 파일명을 검사하고 기존 파일을 덮어쓰지 않습니다. 업로드는 확인된 형태의 `file-api.dooray.com` 리디렉션만 허용합니다. **삭제·복사·이동은 제공하지 않습니다.** 상세 명령은 `python scripts/dooray.py drive --help`와 [Drive 참고 문서](skills/dooray/references/drive.md)를 보세요.
+Drive는 목록·메타·변경내역·다운로드, 승인된 파일 업로드·폴더 생성·**멤버 범위** 공유 링크 발급/조회를 지원합니다. 다운로드 시 서버 제공 파일명을 검사하고 기존 파일을 덮어쓰지 않습니다. 업로드는 확인된 형태의 `file-api.dooray.com` 리디렉션만 허용합니다. **삭제·복사·이동은 제공하지 않습니다.** 상세 명령은 `python scripts/dooray.py drive --help`, 경로별 과거 기록과 현재 테스트 구분은 [검증 현황](skills/dooray/references/verification.md)을 보세요.
 
 업무는 조회·생성, 위키는 CLI 목록(페이지 기능은 Python 모듈), 일정은 조회·생성·전체 상태 수정, 메신저는 채널 목록·DM/채널 전송을 제공합니다. 종일 일정의 입력 종료일은 포함일이며 API 요청에서는 다음 날의 미포함 종료일로 변환합니다. 실제 메시지 전송 성공은 이 공개본에서 확인하지 않았습니다.
 
@@ -93,4 +93,4 @@ Drive는 목록·메타·변경내역·다운로드, 승인된 파일 업로드�
 python -m unittest discover -s tests -v
 ```
 
-쓰기 전 조회로 대상과 권한을 확인하고 사용자에게 전송 본문·영향을 설명해 승인받으세요. 자격증명, 실제 조직/프로젝트 ID, 응답 원문을 공개 이슈·예제·테스트에 넣지 마세요. 참고한 공개 프로젝트는 [출처 고지](THIRD-PARTY-NOTICES.md)에 정리했습니다.
+쓰기 전 조회로 대상과 권한을 확인하고 사용자에게 전송 본문·영향을 설명해 승인받으세요. 자격증명, 실제 조직/프로젝트 ID, 응답 원문을 공개 이슈·예제·테스트에 넣지 마세요.

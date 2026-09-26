@@ -1,8 +1,4 @@
-"""Standard-user wiki page operations (no file upload or redirect handling).
-
-Evidence: https://github.com/dooray-go/dooray-sdk/blob/develop/openapi/wiki/pages.go
-Payloads: https://github.com/dooray-go/dooray-sdk/blob/develop/openapi/model/wiki/page.go
-"""
+"""Standard-user wiki page operations (no file upload or redirect handling)."""
 from __future__ import annotations
 
 from client import path_id

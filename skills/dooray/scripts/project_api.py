@@ -1,7 +1,4 @@
-"""Standard-user project listing, grounded in public dooray-go/dooray-sdk.
-
-Evidence: https://github.com/dooray-go/dooray-sdk/blob/develop/openapi/project/getprojects.go
-"""
+"""Standard-user project listing."""
 from __future__ import annotations
 
 
